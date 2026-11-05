@@ -1,0 +1,32 @@
+region       = "ap-south-1"
+environment  = "prod"
+cluster_name = "my-existing-eks"                                   # <-- CHANGE
+
+# Private subnets of the cluster, 2+ AZs (RDS, Redis, GitLab nodes). Gitaly is pinned to the first one's AZ.
+private_subnet_ids = ["subnet-aaaa", "subnet-bbbb", "subnet-cccc"] # <-- CHANGE
+# Your existing node group security groups, if pods do not use the cluster security group
+client_security_group_ids = []
+
+domain            = "example.com" # gitlab.example.com     <-- CHANGE
+letsencrypt_email = "ops@example.com"                      # <-- CHANGE
+external_dns      = false # true if the cluster runs external-dns for this domain
+install_cert_manager = true # false if cert-manager is already installed
+
+create_node_group = true
+node_group = {
+  instance_types = ["m7g.xlarge"] # Graviton; use m7i.xlarge + AL2023_x86_64_STANDARD for x86
+  ami_type       = "AL2023_ARM_64_STANDARD"
+  min_size       = 2
+  max_size       = 4
+  desired_size   = 2
+}
+
+# Separate database (set both true for HA, ~+$310/month)
+db_instance_class = "db.m7g.large"
+db_multi_az       = false
+redis_node_type   = "cache.m7g.large"
+redis_replica     = false
+
+backup_schedule           = "0 22 * * *" # UTC
+backup_retention_days     = 90
+gitaly_snapshot_retention = 14

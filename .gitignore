@@ -1,0 +1,16 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+.terraform.tfstate.lock.info
+# Real backend configs / secrets stay local
+*.backend.hcl
+!*.backend.hcl.example
+*.auto.tfvars
+# Credentials
+*.pem
+*.key
+keys/
+.env
